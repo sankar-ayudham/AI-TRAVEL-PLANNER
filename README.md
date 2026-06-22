@@ -1,5 +1,6 @@
 ````md
 Live Demo: https://journey-pilot.vercel.app
+
 # ✈️ JourneyPilot 
 
 JourneyPilot is a premium, full-stack travel orchestration platform that transforms chaotic vacation planning into structured, route-optimized, and budget-itemized travel blueprints. Driven by Gemini AI intelligence and built on the robust MERN stack, it eliminates backtracking and calculates realistic financial baselines purely in Indian Rupees (₹).
