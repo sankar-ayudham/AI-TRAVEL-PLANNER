@@ -1832,25 +1832,118 @@ body {
 .jp-route-note > svg { flex: 0 0 auto; margin-top: 3px; color: var(--jp-clay); }
 .jp-route-note p { display: flex; flex-direction: column; gap: 3px; margin: 0; font-size: 11px; overflow-wrap: anywhere; }
 .jp-route-note strong { color: var(--jp-ink); }
-.jp-activity-list { display: flex; flex-direction: column; margin-top: 15px; }
-.jp-activity { display: flex; gap: 12px; }
-.jp-activity-timeline { position: relative; display: flex; width: 12px; flex: 0 0 12px; justify-content: center; }
+/* Responsive itinerary activity layout */
+.jp-activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  min-width: 0;
+  margin-top: 15px;
+}
+
+.jp-activity {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+.jp-activity-timeline {
+  position: relative;
+  display: flex;
+  flex: 0 0 12px;
+  width: 12px;
+  justify-content: center;
+}
+
 .jp-activity-timeline::after {
   position: absolute;
   top: 12px;
   bottom: -2px;
   width: 1px;
-  background: #ded8ca;
+  background: var(--jp-line);
   content: '';
 }
-.jp-activity:last-child .jp-activity-timeline::after { display: none; }
-.jp-activity-timeline span { z-index: 1; width: 8px; height: 8px; margin-top: 5px; border: 2px solid var(--jp-clay); border-radius: 50%; background: var(--jp-card); }
-.jp-activity-content { min-width: 0; flex: 1; padding-bottom: 17px; }
-.jp-activity-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
-.jp-activity-top h6 { margin: 3px 0 0; font-size: 15px; overflow-wrap: anywhere; }
-.jp-activity-time { display: inline-flex; align-items: center; gap: 5px; color: var(--jp-clay); font-size: 10px; }
-.jp-activity-cost { flex: 0 0 auto; color: var(--jp-green); font-size: 10px; font-weight: 700; }
-.jp-activity-content > p { margin: 6px 0 0; color: var(--jp-muted); font-size: 11px; overflow-wrap: anywhere; }
+
+.jp-activity:last-child .jp-activity-timeline::after {
+  display: none;
+}
+
+.jp-activity-timeline span {
+  z-index: 1;
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  margin-top: 5px;
+  border: 2px solid var(--jp-clay);
+  border-radius: 50%;
+  background: var(--jp-card);
+}
+
+.jp-activity-content {
+  flex: 1 1 0%;
+  width: 0;
+  min-width: 0;
+  max-width: 100%;
+  padding-bottom: 20px;
+}
+
+.jp-activity-top {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+}
+
+.jp-activity-top h6 {
+  min-width: 0;
+  max-width: 100%;
+  margin: 3px 0 0;
+  font-size: 17px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.jp-activity-time {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  color: var(--jp-clay);
+  font-size: 11px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.jp-activity-cost {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  color: var(--jp-green);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.jp-activity-content > p {
+  min-width: 0;
+  max-width: 100%;
+  margin: 7px 0 0;
+  color: var(--jp-muted);
+  font-size: 12px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
 .jp-day-extras { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 5px; }
 .jp-day-extras > div { min-width: 0; padding: 12px; background: #f4efe5; }
 .jp-day-extras span,
