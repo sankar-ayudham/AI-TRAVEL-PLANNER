@@ -1,27 +1,50 @@
+
 const jwt = require('jsonwebtoken');
 
-module.exports = function(req, res, next) {
-  // Get token from header
-  const authHeader = req.header('Authorization');
+module.exports = function auth(req, res, next) {
+  const authHeader = req.get('Authorization');
 
-  // Check if no token exists or if it doesn't start with 'Bearer '
+  // Require exactly one Bearer token.
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'No token, authorization denied' });
+    return res.status(401).json({
+      message: 'Authentication required',
+    });
+  }
+
+  const token = authHeader.slice(7).trim();
+
+  if (!token || /\s/.test(token)) {
+    return res.status(401).json({
+      message: 'Invalid authentication token',
+    });
   }
 
   try {
-    // Extract the actual token string (removing the "Bearer " part)
-    const token = authHeader.split(' ')[1];
-    
-    // Verify the token using our secret key
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    
-    // Attach the user's ID to the request so other functions know exactly who is making the request
-    req.user = decoded.user;
-    
-    // Move on to the next function
-    next();
-  } catch (err) {
-    res.status(401).json({ message: 'Token is not valid' });
+    const decoded = jwt.verify(token, process.env.JWT_SECRET, {
+      algorithms: ['HS256'],
+    });
+
+    // Tokens issued by this application contain { user: { id } }.
+    if (
+      !decoded ||
+      typeof decoded !== 'object' ||
+      !decoded.user ||
+      typeof decoded.user.id !== 'string' ||
+      !/^[a-fA-F0-9]{24}$/.test(decoded.user.id)
+    ) {
+      return res.status(401).json({
+        message: 'Invalid authentication token',
+      });
+    }
+
+    req.user = {
+      id: decoded.user.id,
+    };
+
+    return next();
+  } catch (error) {
+    return res.status(401).json({
+      message: 'Invalid or expired authentication token',
+    });
   }
 };

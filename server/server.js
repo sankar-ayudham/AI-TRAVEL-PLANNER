@@ -1,44 +1,89 @@
-// Load secret environment variables first
+
 require('dotenv').config();
 
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
-// Import the route files we just created
-const authRoutes = require('./routes/authRoutes');
-const tripRoutes = require('./routes/tripRoutes');
-
-// Initialize the Express application
 const app = express();
 
-// Middleware setup
-// CORS allows our React frontend to securely talk to this backend
 app.use(cors());
-// express.json() allows our server to read JSON data sent in requests
 app.use(express.json());
 
-// Mount the routes
-app.use('/api/auth', authRoutes);
-app.use('/api/trips', tripRoutes);
-
-// A simple health-check route (Required later for Render deployment)
 app.get('/', (req, res) => {
-  res.send('AI Travel Planner Backend is running successfully!');
+  res.status(200).json({
+    status: 'ok',
+    message: 'AI Travel Planner API is running',
+    database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+  });
 });
 
-// Connect to MongoDB Atlas
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('Successfully connected to MongoDB Atlas'))
-  .catch((err) => {
-    console.error('Failed to connect to MongoDB. Error details:');
-    console.error(err);
+let server;
+
+async function startServer() {
+  const mongoUri =
+    process.env.MONGODB_URI || process.env.MONGO_URI;
+
+  if (!mongoUri) {
+    throw new Error(
+      'Missing MONGODB_URI or MONGO_URI environment variable'
+    );
+  }
+
+  if (!process.env.JWT_SECRET) {
+    throw new Error('Missing JWT_SECRET environment variable');
+  }
+
+  if (!process.env.GEMINI_API_KEY) {
+    throw new Error('Missing GEMINI_API_KEY environment variable');
+  }
+
+  // Connect to MongoDB before accepting requests.
+  await mongoose.connect(mongoUri, {
+    serverSelectionTimeoutMS: 10000,
   });
 
-// Start the server
-// Render provides a dynamic PORT. If testing locally, it defaults to 5000.
-const PORT = process.env.PORT || 5000;
+  console.log('Successfully connected to MongoDB Atlas');
 
-app.listen(PORT, () => {
-  console.log(`Server is up and actively listening on port ${PORT}`);
+  // Load routes after required configuration has been checked.
+  const authRoutes = require('./routes/authRoutes');
+  const tripRoutes = require('./routes/tripRoutes');
+
+  app.use('/api/auth', authRoutes);
+  app.use('/api/trips', tripRoutes);
+
+  const PORT = process.env.PORT || 5000;
+
+  server = app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`);
+  });
+}
+
+async function shutdown(signal) {
+  console.log(`Received ${signal}; shutting down`);
+
+  try {
+    if (server) {
+      await new Promise((resolve, reject) => {
+        server.close((error) => {
+          if (error) reject(error);
+          else resolve();
+        });
+      });
+    }
+
+    await mongoose.disconnect();
+    process.exitCode = 0;
+  } catch (error) {
+    console.error('Shutdown failed:', error.message);
+    process.exitCode = 1;
+  }
+}
+
+process.once('SIGINT', () => shutdown('SIGINT'));
+process.once('SIGTERM', () => shutdown('SIGTERM'));
+
+startServer().catch((error) => {
+  console.error('Server startup failed:', error.message);
+  process.exitCode = 1;
 });
