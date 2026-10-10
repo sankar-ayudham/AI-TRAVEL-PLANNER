@@ -1,100 +1,181 @@
-import { useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useContext, useState, useEffect } from 'react';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/AppContext.jsx';
-import { FaSun, FaMoon, FaUser, FaSignOutAlt, FaThLarge } from 'react-icons/fa';
+import {
+  FaSun,
+  FaMoon,
+  FaUser,
+  FaSignOutAlt,
+  FaThLarge,
+  FaCompass,
+  FaBars,
+  FaTimes,
+  FaArrowRight,
+} from 'react-icons/fa';
 
 export default function Navbar() {
-  const { user, logout, darkMode, toggleDarkMode } = useContext(AppContext);
+  const { user, logout, darkMode, toggleDarkMode } =
+    useContext(AppContext);
+
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [user]);
 
   const handleLogout = () => {
+    setMenuOpen(false);
     logout();
     navigate('/login');
   };
 
+  const closeMenu = () => setMenuOpen(false);
+
   return (
-    <nav className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50 transition-colors duration-300">
-      <div className="max-w-7xl px-4 sm:px-6 lg:px-8 mx-auto">
-        <div className="flex justify-between h-16 items-center">
-          
-          {/* JourneyPilot Custom Logo Lockup */}
-          <div className="flex items-center">
-            <Link to="/" className="flex items-center space-x-2.5 group">
-              {/* Custom SVG: Minimalist Aviation HUD / Navigation Tracking Pointer */}
-              <svg 
-                className="h-7 w-7 text-blue-600 dark:text-blue-500 transition-transform group-hover:rotate-12 duration-300" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="2.5" 
-                strokeLinecap="round" 
-                strokeLinejoin="round"
+    <header
+      className={`jp-navbar ${darkMode ? 'jp-navbar-dark' : ''}`}
+    >
+      <nav className="jp-navbar-inner" aria-label="Main navigation">
+        <Link
+          to="/"
+          className="jp-brand"
+          aria-label="JourneyPilot home"
+          onClick={closeMenu}
+        >
+          <span className="jp-brand-icon">
+            <FaCompass aria-hidden="true" />
+          </span>
+
+          <span className="jp-brand-word">
+            journey<span>pilot</span><i>.</i>
+          </span>
+        </Link>
+
+        <div className="jp-navbar-actions">
+          {user && (
+            <div className={`jp-nav-links ${menuOpen ? 'jp-nav-links-open' : ''}`}>
+              <NavLink
+                to="/dashboard"
+                className={({ isActive }) =>
+                  `jp-nav-link ${isActive ? 'jp-nav-link-active' : ''}`
+                }
+                onClick={closeMenu}
               >
-                <polygon points="3 11 22 2 13 21 11 13 3 11" />
-              </svg>
-              <span className="text-xl font-black tracking-tight text-gray-900 dark:text-white">
-                Journey<span className="text-blue-600 dark:text-blue-500">Pilot</span>
-              </span>
-            </Link>
-          </div>
+                <FaThLarge aria-hidden="true" />
+                <span>Dashboard</span>
+              </NavLink>
 
-          {/* Right Navigation Controls */}
-          <div className="flex items-center space-x-4">
-            
-            <button
-              onClick={toggleDarkMode}
-              className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors focus:outline-none"
-              aria-label="Toggle Dark Mode"
-            >
-              {darkMode ? <FaSun className="text-xl text-yellow-400" /> : <FaMoon className="text-xl" />}
-            </button>
+              <NavLink
+                to="/profile"
+                className={({ isActive }) =>
+                  `jp-nav-link ${isActive ? 'jp-nav-link-active' : ''}`
+                }
+                onClick={closeMenu}
+              >
+                <FaUser aria-hidden="true" />
+                <span>Profile</span>
+              </NavLink>
 
-            {user ? (
-              <div className="flex items-center space-x-1 sm:space-x-3">
-                <Link
-                  to="/dashboard"
-                  className="flex items-center space-x-1 px-3 py-2 rounded-xl text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all"
-                >
-                  <FaThLarge className="text-xs" />
-                  <span className="hidden sm:inline">Dashboard</span>
-                </Link>
-                
-                <Link
-                  to="/profile"
-                  className="flex items-center space-x-1 px-3 py-2 rounded-xl text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all"
-                >
-                  <FaUser className="text-xs" />
-                  <span className="hidden sm:inline">Profile</span>
-                </Link>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="jp-nav-link jp-logout"
+              >
+                <FaSignOutAlt aria-hidden="true" />
+                <span>Logout</span>
+              </button>
+            </div>
+          )}
 
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center space-x-1 px-3 py-2 rounded-xl text-sm font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
-                >
-                  <FaSignOutAlt className="text-xs" />
-                  <span className="hidden sm:inline">Logout</span>
-                </button>
-              </div>
+          {!user && (
+            <div className="jp-auth-links">
+              <Link
+                to="/login"
+                className="jp-login-link"
+                onClick={closeMenu}
+              >
+                Sign in
+              </Link>
+
+              <Link
+                to="/register"
+                className="jp-signup-link"
+                onClick={closeMenu}
+              >
+                Get started <FaArrowRight aria-hidden="true" />
+              </Link>
+            </div>
+          )}
+
+          <button
+            type="button"
+            onClick={toggleDarkMode}
+            className="jp-theme-toggle"
+            aria-label={
+              darkMode ? 'Switch to light mode' : 'Switch to dark mode'
+            }
+            title={darkMode ? 'Light mode' : 'Dark mode'}
+          >
+            {darkMode ? (
+              <FaSun aria-hidden="true" />
             ) : (
-              <div className="flex items-center space-x-2">
-                <Link
-                  to="/login"
-                  className="px-3 py-2 rounded-xl text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-blue-600 transition-colors"
-                >
-                  Login
-                </Link>
-                <Link
-                  to="/register"
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all shadow-sm"
-                >
-                  Sign Up
-                </Link>
-              </div>
+              <FaMoon aria-hidden="true" />
             )}
+          </button>
 
-          </div>
+          {user && (
+            <button
+              type="button"
+              className="jp-mobile-menu-toggle"
+              onClick={() => setMenuOpen((open) => !open)}
+              aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              aria-expanded={menuOpen}
+              aria-controls="jp-navigation-links"
+            >
+              {menuOpen ? <FaTimes /> : <FaBars />}
+            </button>
+          )}
         </div>
-      </div>
-    </nav>
+      </nav>
+
+      {user && (
+        <div
+          id="jp-navigation-links"
+          className={`jp-mobile-nav ${menuOpen ? 'jp-mobile-nav-open' : ''}`}
+        >
+          <NavLink
+            to="/dashboard"
+            className={({ isActive }) =>
+              `jp-mobile-nav-link ${isActive ? 'jp-mobile-nav-link-active' : ''}`
+            }
+            onClick={closeMenu}
+          >
+            <FaThLarge aria-hidden="true" />
+            Dashboard
+          </NavLink>
+
+          <NavLink
+            to="/profile"
+            className={({ isActive }) =>
+              `jp-mobile-nav-link ${isActive ? 'jp-mobile-nav-link-active' : ''}`
+            }
+            onClick={closeMenu}
+          >
+            <FaUser aria-hidden="true" />
+            Profile
+          </NavLink>
+
+          <button
+            type="button"
+            className="jp-mobile-nav-link jp-mobile-logout"
+            onClick={handleLogout}
+          >
+            <FaSignOutAlt aria-hidden="true" />
+            Logout
+          </button>
+        </div>
+      )}
+    </header>
   );
 }

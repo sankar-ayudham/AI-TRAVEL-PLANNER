@@ -1,7 +1,16 @@
 import { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/AppContext.jsx';
-import { FaUser, FaEnvelope, FaLock, FaPlane } from 'react-icons/fa';
+import {
+  FaUser,
+  FaEnvelope,
+  FaLock,
+  FaCompass,
+  FaArrowRight,
+  FaSpinner,
+  FaEye,
+  FaEyeSlash,
+} from 'react-icons/fa';
 
 export default function Register() {
   const { register } = useContext(AppContext);
@@ -14,11 +23,17 @@ export default function Register() {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const { name, email, password } = formData;
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+
+    if (error) setError('');
   };
 
   const handleSubmit = async (e) => {
@@ -26,7 +41,7 @@ export default function Register() {
     setError('');
 
     if (!name.trim() || !email.trim() || !password.trim()) {
-      setError('Please fill in all input fields.');
+      setError('Please fill in all fields.');
       return;
     }
 
@@ -37,95 +52,200 @@ export default function Register() {
 
     try {
       setLoading(true);
-      await register(name, email, password);
+      await register(name.trim(), email.trim(), password);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      setError(
+        err.response?.data?.message ||
+          'Registration failed. Please try again.'
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-background-light dark:bg-background-dark px-4 sm:px-6 transition-colors duration-300">
-      <div className="max-w-md w-full space-y-8 bg-surface-light dark:bg-surface-dark p-8 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700/50">
-        <div className="text-center">
-          <div className="inline-flex p-4 bg-blue-100 dark:bg-blue-900/30 text-primary rounded-full mb-3">
-            <FaPlane className="transform -rotate-45 text-2xl" />
+    <main className="jp-auth-page jp-register-page">
+      <section className="jp-auth-shell">
+        <div className="jp-auth-visual">
+          <img
+            className="jp-auth-photo"
+            src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1400&q=85"
+            alt="A peaceful mountain lake surrounded by dramatic landscapes"
+          />
+
+          <div className="jp-auth-visual-overlay" />
+
+          <Link to="/" className="jp-auth-brand">
+            <span className="jp-auth-brand-icon">
+              <FaCompass />
+            </span>
+            <span>JourneyPilot</span>
+          </Link>
+
+          <div className="jp-auth-visual-copy">
+            <span className="jp-auth-eyebrow">
+              YOUR NEXT CHAPTER STARTS HERE
+            </span>
+
+            <h1>
+              The world
+              <br />
+              is waiting
+              <br />
+              <em>for you.</em>
+            </h1>
+
+            <p>
+              Create your account and turn the places you've
+              dreamed about into journeys you'll remember.
+            </p>
+
+            <div className="jp-auth-photo-caption">
+              <span className="jp-auth-caption-line" />
+              YOUR JOURNEY, YOUR WAY
+            </div>
           </div>
-          <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white">Create an Account</h2>
-          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">Join RoamAI and start planning smart trips</p>
         </div>
 
-        {error && (
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 p-3 rounded-lg text-sm text-center font-medium">
-            {error}
-          </div>
-        )}
+        <div className="jp-auth-form-side">
+          <div className="jp-auth-form-wrap">
+            <Link to="/" className="jp-auth-mobile-brand">
+              <FaCompass />
+              <span>JourneyPilot</span>
+            </Link>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400"><FaUser /></span>
-                <input
-                  type="text"
-                  name="name"
-                  value={name}
-                  onChange={handleChange}
-                  placeholder="John Doe"
-                  className="block w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 rounded-xl text-gray-950 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                />
-              </div>
+            <div className="jp-auth-heading">
+              <span className="jp-auth-kicker">
+                BEGIN YOUR ADVENTURE
+              </span>
+
+              <h2>Create your account.</h2>
+
+              <p>
+                A few details, and your next adventure is one
+                step closer.
+              </p>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400"><FaEnvelope /></span>
-                <input
-                  type="email"
-                  name="email"
-                  value={email}
-                  onChange={handleChange}
-                  placeholder="john@example.com"
-                  className="block w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 rounded-xl text-gray-950 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                />
+
+            {error && (
+              <div className="jp-auth-error" role="alert">
+                {error}
               </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400"><FaLock /></span>
-                <input
-                  type="password"
-                  name="password"
-                  value={password}
-                  onChange={handleChange}
-                  placeholder="••••••••"
-                  className="block w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 rounded-xl text-gray-950 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                />
-              </div>
-            </div>
-          </div>
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-primary hover:bg-blue-600 text-white py-3 px-4 rounded-xl font-semibold transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
+            )}
+
+            <form
+              className="jp-auth-form"
+              onSubmit={handleSubmit}
             >
-              {loading ? 'Creating Account...' : 'Sign Up'}
-            </button>
-          </div>
-        </form>
+              <div className="jp-auth-field">
+                <label htmlFor="register-name">Full name</label>
 
-        <div className="text-center mt-4">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Already have an account?{' '}
-            <Link to="/login" className="text-primary hover:underline font-medium">Sign In</Link>
-          </p>
+                <div className="jp-auth-input-wrap">
+                  <FaUser className="jp-auth-input-icon" />
+
+                  <input
+                    id="register-name"
+                    type="text"
+                    name="name"
+                    value={name}
+                    onChange={handleChange}
+                    placeholder="Your full name"
+                    autoComplete="name"
+                    maxLength={100}
+                    required
+                    disabled={loading}
+                  />
+                </div>
+              </div>
+
+              <div className="jp-auth-field">
+                <label htmlFor="register-email">
+                  Email address
+                </label>
+
+                <div className="jp-auth-input-wrap">
+                  <FaEnvelope className="jp-auth-input-icon" />
+
+                  <input
+                    id="register-email"
+                    type="email"
+                    name="email"
+                    value={email}
+                    onChange={handleChange}
+                    placeholder="you@example.com"
+                    autoComplete="email"
+                    required
+                    disabled={loading}
+                  />
+                </div>
+              </div>
+
+              <div className="jp-auth-field">
+                <label htmlFor="register-password">Password</label>
+
+                <div className="jp-auth-input-wrap">
+                  <FaLock className="jp-auth-input-icon" />
+
+                  <input
+                    id="register-password"
+                    type={showPassword ? 'text' : 'password'}
+                    name="password"
+                    value={password}
+                    onChange={handleChange}
+                    placeholder="At least 6 characters"
+                    autoComplete="new-password"
+                    minLength={6}
+                    required
+                    disabled={loading}
+                  />
+
+                  <button
+                    type="button"
+                    className="jp-auth-password-toggle"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={
+                      showPassword ? 'Hide password' : 'Show password'
+                    }
+                    aria-pressed={showPassword}
+                    disabled={loading}
+                  >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className="jp-auth-submit"
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <FaSpinner className="jp-auth-spinner" />
+                    Creating your account...
+                  </>
+                ) : (
+                  <>
+                    Create account
+                    <FaArrowRight />
+                  </>
+                )}
+              </button>
+            </form>
+
+            <p className="jp-auth-switch">
+              Already have an account?{' '}
+              <Link to="/login">Sign in</Link>
+            </p>
+
+            <div className="jp-auth-footer">
+              <span>MADE FOR THE JOURNEY</span>
+              <span>NOT JUST THE DESTINATION</span>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }

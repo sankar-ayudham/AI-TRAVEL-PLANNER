@@ -1,71 +1,177 @@
 import { useContext } from 'react';
+import { Link } from 'react-router-dom';
 import { AppContext } from '../context/AppContext.jsx';
-import { FaUserCircle, FaEnvelope, FaCalendarAlt, FaShieldAlt } from 'react-icons/fa';
+import {
+  FaUserCircle,
+  FaEnvelope,
+  FaCalendarAlt,
+  FaShieldAlt,
+  FaCompass,
+  FaArrowRight,
+} from 'react-icons/fa';
 
 export default function Profile() {
   const { user } = useContext(AppContext);
 
   if (!user) {
     return (
-      <div className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-background-light dark:bg-background-dark">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
+      <main className="jp-profile-loading">
+        <div
+          className="jp-profile-spinner"
+          role="status"
+          aria-label="Loading profile"
+        />
+        <p>Preparing your travel journal...</p>
+      </main>
     );
   }
 
-  const joinDate = user.createdAt 
-    ? new Date(user.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+  const joinDate = user.createdAt
+    ? new Date(user.createdAt).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
     : 'Recently';
 
+  const initials = (user.name || 'Traveler')
+    .trim()
+    .split(/\s+/)
+    .map((part) => part[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-background-light dark:bg-background-dark py-12 px-4 sm:px-6 transition-colors duration-300">
-      <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-8">Account Settings</h1>
-        <div className="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-md border border-gray-100 dark:border-gray-700/50 overflow-hidden">
-          <div className="h-32 bg-gradient-to-r from-blue-500 to-primary"></div>
-          <div className="p-8 relative pt-0">
-            <div className="absolute -top-12 left-8 bg-white dark:bg-gray-800 rounded-full p-1 border-4 border-white dark:border-gray-800 shadow-sm">
-              <FaUserCircle className="text-8xl text-gray-400 dark:text-gray-500" />
+    <main className="jp-profile-page">
+      <div className="jp-profile-container">
+        <div className="jp-profile-breadcrumb">
+          <Link to="/dashboard">My journeys</Link>
+          <span>/</span>
+          <span>Account</span>
+        </div>
+
+        <header className="jp-profile-heading">
+          <span className="jp-profile-eyebrow">
+            YOUR TRAVEL IDENTITY
+          </span>
+          <h1>Account settings.</h1>
+          <p>
+            The details behind every journey you plan with JourneyPilot.
+          </p>
+        </header>
+
+        <section className="jp-profile-card">
+          <div className="jp-profile-cover">
+            <div className="jp-profile-cover-mark">
+              <FaCompass />
+              <span>JOURNEYPILOT TRAVEL JOURNAL</span>
             </div>
-            <div className="h-16"></div>
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{user.name}</h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Personal Travel Member</p>
-            </div>
-            <hr className="border-gray-100 dark:border-gray-700/60 my-6" />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="flex items-start space-x-3 p-4 bg-gray-50 dark:bg-gray-800/40 rounded-xl">
-                <div className="text-primary mt-1"><FaUserCircle className="text-lg" /></div>
-                <div>
-                  <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Full Name</p>
-                  <p className="text-base font-medium text-gray-900 dark:text-white mt-0.5">{user.name}</p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-3 p-4 bg-gray-50 dark:bg-gray-800/40 rounded-xl">
-                <div className="text-primary mt-1"><FaEnvelope className="text-lg" /></div>
-                <div>
-                  <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Email Address</p>
-                  <p className="text-base font-medium text-gray-900 dark:text-white mt-0.5">{user.email}</p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-3 p-4 bg-gray-50 dark:bg-gray-800/40 rounded-xl">
-                <div className="text-primary mt-1"><FaCalendarAlt className="text-lg" /></div>
-                <div>
-                  <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Member Since</p>
-                  <p className="text-base font-medium text-gray-900 dark:text-white mt-0.5">{joinDate}</p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-3 p-4 bg-gray-50 dark:bg-gray-800/40 rounded-xl">
-                <div className="text-primary mt-1"><FaShieldAlt className="text-lg" /></div>
-                <div>
-                  <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Security Tier</p>
-                  <p className="text-base font-medium text-green-600 dark:text-green-400 mt-0.5">Verified JWT Secured</p>
-                </div>
-              </div>
+            <div className="jp-profile-cover-decoration" aria-hidden="true">
+              <span />
+              <span />
+              <span />
             </div>
           </div>
-        </div>
+
+          <div className="jp-profile-content">
+            <div className="jp-profile-identity">
+              <div className="jp-profile-avatar" aria-label={`Avatar for ${user.name || 'traveler'}`}>
+                {initials || <FaUserCircle />}
+              </div>
+
+              <div className="jp-profile-identity-copy">
+                <span className="jp-profile-member-label">
+                  YOUR ACCOUNT
+                </span>
+                <h2>{user.name || 'Traveler'}</h2>
+                <p>{user.email}</p>
+              </div>
+
+              <span className="jp-profile-status">
+                <span />
+                Active member
+              </span>
+            </div>
+
+            <div className="jp-profile-divider" />
+
+            <div className="jp-profile-section-heading">
+              <div>
+                <span className="jp-profile-eyebrow">ACCOUNT DETAILS</span>
+                <h3>Your information</h3>
+              </div>
+              <p>Your registered account details.</p>
+            </div>
+
+            <div className="jp-profile-details">
+              <div className="jp-profile-detail">
+                <div className="jp-profile-detail-icon">
+                  <FaUserCircle />
+                </div>
+                <div className="jp-profile-detail-copy">
+                  <span>Full name</span>
+                  <strong>{user.name || 'Not provided'}</strong>
+                </div>
+              </div>
+
+              <div className="jp-profile-detail">
+                <div className="jp-profile-detail-icon">
+                  <FaEnvelope />
+                </div>
+                <div className="jp-profile-detail-copy">
+                  <span>Email address</span>
+                  <strong className="jp-profile-email">
+                    {user.email || 'Not provided'}
+                  </strong>
+                </div>
+              </div>
+
+              <div className="jp-profile-detail">
+                <div className="jp-profile-detail-icon">
+                  <FaCalendarAlt />
+                </div>
+                <div className="jp-profile-detail-copy">
+                  <span>Member since</span>
+                  <strong>{joinDate}</strong>
+                </div>
+              </div>
+
+              <div className="jp-profile-detail">
+                <div className="jp-profile-detail-icon">
+                  <FaShieldAlt />
+                </div>
+                <div className="jp-profile-detail-copy">
+                  <span>Account security</span>
+                  <strong className="jp-profile-security">
+                    Authenticated account
+                  </strong>
+                </div>
+              </div>
+            </div>
+
+            <div className="jp-profile-note">
+              <div className="jp-profile-note-icon">
+                <FaCompass />
+              </div>
+              <div>
+                <h3>There's a world out there.</h3>
+                <p>
+                  Your next adventure is waiting. Pick a destination
+                  and let JourneyPilot help plan the way.
+                </p>
+              </div>
+              <Link to="/dashboard" aria-label="Plan your next trip">
+                <FaArrowRight />
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <p className="jp-profile-footer">
+          JOURNEYPILOT <span>·</span> YOUR JOURNEY, YOUR WAY
+        </p>
       </div>
-    </div>
+    </main>
   );
 }

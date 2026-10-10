@@ -1,7 +1,16 @@
+
 import { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/AppContext.jsx';
-import { FaEnvelope, FaLock, FaPlane } from 'react-icons/fa';
+import {
+  FaEnvelope,
+  FaLock,
+  FaCompass,
+  FaArrowRight,
+  FaSpinner,
+  FaEye,
+  FaEyeSlash,
+} from 'react-icons/fa';
 
 export default function Login() {
   const { login } = useContext(AppContext);
@@ -13,99 +22,182 @@ export default function Login() {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const { email, password } = formData;
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData((current) => ({
+      ...current,
+      [e.target.name]: e.target.value,
+    }));
+    if (error) setError('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
-    if (!email.trim() || !password.trim()) {
-      setError('Please fill in all fields.');
+    if (!email.trim() || !password) {
+      setError('Please enter both your email and password.');
       return;
     }
 
     try {
       setLoading(true);
-      await login(email, password);
+      await login(email.trim(), password);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || 'Invalid credentials. Please try again.');
+      setError(
+        err.response?.data?.message ||
+        'We couldn’t sign you in. Check your details and try again.'
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-background-light dark:bg-background-dark px-4 sm:px-6 transition-colors duration-300">
-      <div className="max-w-md w-full space-y-8 bg-surface-light dark:bg-surface-dark p-8 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700/50">
-        <div className="text-center">
-          <div className="inline-flex p-4 bg-blue-100 dark:bg-blue-900/30 text-primary rounded-full mb-3">
-            <FaPlane className="transform -rotate-45 text-2xl" />
-          </div>
-          <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white">Welcome Back</h2>
-          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">Sign in to access your customized AI travel itineraries</p>
-        </div>
+    <main className="jp-auth-page jp-login-page">
+      <div className="jp-auth-shell">
+        <section className="jp-auth-visual">
+          <div className="jp-auth-photo" />
 
-        {error && (
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 p-3 rounded-lg text-sm text-center font-medium">
-            {error}
+          <div className="jp-auth-visual-top">
+            <span className="jp-auth-brand-mark"><FaCompass /></span>
+            <span>THE WORLD IS WAITING</span>
           </div>
-        )}
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400"><FaEnvelope /></span>
-                <input
-                  type="email"
-                  name="email"
-                  value={email}
-                  onChange={handleChange}
-                  placeholder="john@example.com"
-                  className="block w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 rounded-xl text-gray-950 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                />
-              </div>
+          <div className="jp-auth-visual-copy">
+            <span className="jp-auth-kicker">
+              YOUR NEXT CHAPTER
+            </span>
+            <h1>Somewhere<br />new is calling<span>.</span></h1>
+            <p>
+              Your saved journeys, your next destination,
+              and all the little details that make a trip yours.
+            </p>
+          </div>
+
+          <div className="jp-auth-photo-caption">
+            <span className="jp-auth-caption-line" />
+            <span>A different view changes everything.</span>
+          </div>
+
+          <span className="jp-auth-visual-number">01 — THE JOURNEY</span>
+        </section>
+
+        <section className="jp-auth-form-side">
+          <div className="jp-auth-form-wrap">
+            <div className="jp-auth-mobile-mark">
+              <FaCompass />
+              <span>journey<span>pilot</span>.</span>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400"><FaLock /></span>
-                <input
-                  type="password"
-                  name="password"
-                  value={password}
-                  onChange={handleChange}
-                  placeholder="••••••••"
-                  className="block w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 rounded-xl text-gray-950 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                />
+
+            <div className="jp-auth-heading">
+              <span className="jp-auth-kicker">WELCOME BACK</span>
+              <h2>Good to see<br /><em>you again.</em></h2>
+              <p>Sign in to pick up where your next adventure begins.</p>
+            </div>
+
+            {error && (
+              <div className="jp-auth-error" role="alert">
+                <span>{error}</span>
+                <button
+                  type="button"
+                  onClick={() => setError('')}
+                  aria-label="Dismiss error"
+                >
+                  ×
+                </button>
               </div>
+            )}
+
+            <form className="jp-auth-form" onSubmit={handleSubmit}>
+              <div className="jp-auth-field">
+                <label htmlFor="login-email">Email address</label>
+                <div className="jp-auth-input-wrap">
+                  <FaEnvelope aria-hidden="true" />
+                  <input
+                    id="login-email"
+                    type="email"
+                    name="email"
+                    value={email}
+                    onChange={handleChange}
+                    placeholder="you@example.com"
+                    autoComplete="email"
+                    required
+                    disabled={loading}
+                  />
+                </div>
+              </div>
+
+              <div className="jp-auth-field">
+                <label htmlFor="login-password">Password</label>
+                <div className="jp-auth-input-wrap">
+                  <FaLock aria-hidden="true" />
+                  <input
+                    id="login-password"
+                    type={showPassword ? 'text' : 'password'}
+                    name="password"
+                    value={password}
+                    onChange={handleChange}
+                    placeholder="Enter your password"
+                    autoComplete="current-password"
+                    required
+                    disabled={loading}
+                  />
+                  <button
+                    type="button"
+                    className="jp-auth-password-toggle"
+                    onClick={() => setShowPassword((value) => !value)}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    aria-pressed={showPassword}
+                    disabled={loading}
+                  >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </button>
+                </div>
+              </div>
+
+              <button
+                className="jp-auth-submit"
+                type="submit"
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <FaSpinner className="jp-auth-spinner" />
+                    Signing you in…
+                  </>
+                ) : (
+                  <>
+                    Sign in to your account
+                    <FaArrowRight />
+                  </>
+                )}
+              </button>
+
+              <p className="jp-auth-secure-note">
+                <FaLock aria-hidden="true" />
+                Your account details stay private.
+              </p>
+            </form>
+
+            <div className="jp-auth-switch">
+              <span>New to JourneyPilot?</span>
+              <Link to="/register">
+                Create an account <FaArrowRight aria-hidden="true" />
+              </Link>
+            </div>
+
+            <div className="jp-auth-footer">
+              <span>JOURNEYPILOT</span>
+              <span>MADE FOR THE JOURNEY</span>
             </div>
           </div>
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-primary hover:bg-blue-600 text-white py-3 px-4 rounded-xl font-semibold transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? 'Signing In...' : 'Sign In'}
-            </button>
-          </div>
-        </form>
-
-        <div className="text-center mt-4">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Don't have an account yet?{' '}
-            <Link to="/register" className="text-primary hover:underline font-medium">Create an Account</Link>
-          </p>
-        </div>
+        </section>
       </div>
-    </div>
+    </main>
   );
 }
