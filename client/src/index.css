@@ -3566,8 +3566,8 @@ html.dark .jp-dashboard select {
 
 html.dark .jp-dashboard .jp-itinerary-summary,
 html.dark .jp-dashboard .jp-route-note {
-  background: var(--jp-dark-surface-alt);
-  color: var(--jp-dark-muted);
+  background: #26342c;
+  color: #f5f5ef;
 }
 
 html.dark .jp-dashboard .jp-route-note strong,
@@ -3586,8 +3586,9 @@ html.dark .jp-dashboard .jp-budget-table th {
 }
 
 html.dark .jp-dashboard .jp-budget-table td {
-  border-color: var(--jp-dark-border);
-  color: var(--jp-dark-muted);
+  border-color: #d5d0c4;
+  background: #fffdf8;
+  color: #243b2f;
 }
 
 html.dark .jp-dashboard .jp-budget-total td {
@@ -3737,4 +3738,132 @@ html.dark .jp-auth-error {
   .journey-home {
     transition: none;
   }
+}
+
+
+/* Saved itinerary dark mode: consistent dark surfaces with readable light text.
+   Keep light-mode rules above untouched; these rules only apply when html.dark is active. */
+html.dark .jp-dashboard .jp-saved-trip,
+html.dark .jp-dashboard .jp-saved-trip-main,
+html.dark .jp-dashboard .jp-saved-trip-toolbar,
+html.dark .jp-dashboard .jp-saved-trip-details,
+html.dark .jp-dashboard .jp-itinerary-summary,
+html.dark .jp-dashboard .jp-day-card,
+html.dark .jp-dashboard .jp-route-note,
+html.dark .jp-dashboard .jp-tips-card,
+html.dark .jp-dashboard .jp-tier-grid > div,
+html.dark .jp-dashboard .jp-day-extras > div {
+  background: var(--jp-dark-surface-alt) !important;
+  border-color: var(--jp-dark-border) !important;
+  color: var(--jp-dark-text) !important;
+}
+
+/* Saved trip title, date, traveller count and toolbar */
+html.dark .jp-dashboard .jp-saved-trip-copy > strong,
+html.dark .jp-dashboard .jp-saved-trip-copy > span,
+html.dark .jp-dashboard .jp-saved-trip-toolbar > span,
+html.dark .jp-dashboard .jp-saved-trip-main {
+  color: var(--jp-dark-text) !important;
+  opacity: 1 !important;
+}
+
+html.dark .jp-dashboard .jp-saved-trip-icon,
+html.dark .jp-dashboard .jp-detail-icon {
+  background: #354b3b !important;
+  color: var(--jp-dark-clay) !important;
+}
+
+html.dark .jp-dashboard .jp-expand-icon {
+  border-color: var(--jp-dark-border) !important;
+  color: var(--jp-dark-text) !important;
+}
+
+html.dark .jp-dashboard .jp-delete-button {
+  color: #f0a087 !important;
+}
+
+/* Summary and all section headings/descriptions */
+html.dark .jp-dashboard .jp-itinerary-summary,
+html.dark .jp-dashboard .jp-itinerary-summary *,
+html.dark .jp-dashboard .jp-detail-heading h4,
+html.dark .jp-dashboard .jp-detail-heading p,
+html.dark .jp-dashboard .jp-estimate-disclaimer,
+html.dark .jp-dashboard .jp-saved-header h2,
+html.dark .jp-dashboard .jp-saved-header p {
+  color: var(--jp-dark-text) !important;
+  opacity: 1 !important;
+}
+
+html.dark .jp-dashboard .jp-detail-heading p,
+html.dark .jp-dashboard .jp-estimate-disclaimer,
+html.dark .jp-dashboard .jp-saved-header p {
+  color: var(--jp-dark-muted) !important;
+}
+
+/* Budget table: dark rows, light readable text in dark mode */
+html.dark .jp-dashboard .jp-budget-table th {
+  background: #354b3b !important;
+  color: #fffdf7 !important;
+  border-color: var(--jp-dark-border) !important;
+}
+
+html.dark .jp-dashboard .jp-budget-table td,
+html.dark .jp-dashboard .jp-budget-total td {
+  background: var(--jp-dark-surface-alt) !important;
+  color: var(--jp-dark-text) !important;
+  border-color: var(--jp-dark-border) !important;
+}
+
+html.dark .jp-dashboard .jp-budget-total td {
+  background: #354b3b !important;
+  font-weight: 700;
+}
+
+/* Day-by-day content */
+html.dark .jp-dashboard .jp-day-card,
+html.dark .jp-dashboard .jp-day-card * {
+  opacity: 1 !important;
+}
+
+html.dark .jp-dashboard .jp-day-title h5,
+html.dark .jp-dashboard .jp-activity-top h6,
+html.dark .jp-dashboard .jp-route-note strong,
+html.dark .jp-dashboard .jp-activity-content > p,
+html.dark .jp-dashboard .jp-route-note p {
+  color: var(--jp-dark-text) !important;
+}
+
+html.dark .jp-dashboard .jp-day-title > span,
+html.dark .jp-dashboard .jp-activity-time,
+html.dark .jp-dashboard .jp-activity-cost,
+html.dark .jp-dashboard .jp-day-extras span,
+html.dark .jp-dashboard .jp-tier-grid span {
+  color: var(--jp-dark-clay) !important;
+}
+
+html.dark .jp-dashboard .jp-day-number {
+  background: #dce6d8 !important;
+  color: #243b2f !important;
+}
+
+html.dark .jp-dashboard .jp-day-number * {
+  color: #243b2f !important;
+}
+
+html.dark .jp-dashboard .jp-day-extras p,
+html.dark .jp-dashboard .jp-tier-grid p,
+html.dark .jp-dashboard .jp-tips-card ul,
+html.dark .jp-dashboard .jp-tips-card li {
+  color: var(--jp-dark-text) !important;
+  opacity: 1 !important;
+}
+
+html.dark .jp-dashboard .jp-route-note {
+  background: #2b3b30 !important;
+}
+
+html.dark .jp-dashboard .jp-day-top,
+html.dark .jp-dashboard .jp-activity-timeline::after {
+  border-color: var(--jp-dark-border) !important;
+  background-color: var(--jp-dark-border);
 }
